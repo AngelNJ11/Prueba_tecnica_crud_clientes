@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: prueba_tecnica_angel_navarro
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  server:
+    port: 8080
