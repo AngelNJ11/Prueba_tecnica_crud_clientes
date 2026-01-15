@@ -2,14 +2,14 @@ package com.ang.nav.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 
 @Entity
 @Table(name = "tipo_cliente")
@@ -22,8 +22,5 @@ public class TipoCliente {
 
     @Column( nullable = false, length = 50)
     private String descripcion;
-
-    @OneToMany(mappedBy = "tipoCliente", fetch = FetchType.LAZY)
-    private List<Cliente> clientes;
 
 }

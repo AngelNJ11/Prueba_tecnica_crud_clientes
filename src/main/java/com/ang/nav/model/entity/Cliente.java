@@ -1,11 +1,15 @@
 package com.ang.nav.model.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 
 @Entity
 @Table(name = "cliente")
@@ -13,7 +17,6 @@ public class Cliente{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_cliente")
     private Integer idCliente;
 
     @Column(name = "nombre_completo", nullable = false, length = 150)
@@ -22,13 +25,13 @@ public class Cliente{
     @Column(name = "nro_documento",nullable = false, length = 20)
     private String nroDocumento;
 
-    @Column(length = 100)
+    @Column(length = 100, nullable = false)
     private String email;
 
-    @Column(length = 15)
+    @Column(length = 15 ,nullable = false)
     private String celular;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "id_tipo", nullable = false)
     private TipoCliente tipoCliente;
 
