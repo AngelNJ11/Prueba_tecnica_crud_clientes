@@ -1,15 +1,15 @@
 package com.ang.nav.services.impl;
 
 import com.ang.nav.model.dao.ClienteDao;
-import com.ang.nav.model.dao.TipoClienteDao;
 import com.ang.nav.model.dto.ClienteDTO;
 import com.ang.nav.model.entity.Cliente;
 import com.ang.nav.model.entity.TipoCliente;
 import com.ang.nav.services.ICliente;
 import com.ang.nav.services.ITipoCliente;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class ClienteImpl implements ICliente {
@@ -22,6 +22,12 @@ public class ClienteImpl implements ICliente {
         this.tipoClienteService = tipoClienteService;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<Cliente> buscarClientes(String nombre, String nroDocumento, Integer idTipo) {
+        return clienteDao.buscarClientes(nombre,nroDocumento,idTipo);
+    }
+
     @Transactional
     @Override
     public Cliente save(ClienteDTO clienteDto) {
@@ -30,7 +36,7 @@ public class ClienteImpl implements ICliente {
 
         Cliente cliente = Cliente.builder()
                 .idCliente(clienteDto.getIdCliente())
-                .nomCompleto(clienteDto.getNombre())
+                .nombreCompleto(clienteDto.getNombre())
                 .nroDocumento(clienteDto.getNroDocumento())
                 .email(clienteDto.getEmail())
                 .celular(clienteDto.getCelular())

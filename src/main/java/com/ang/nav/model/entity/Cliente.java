@@ -20,7 +20,7 @@ public class Cliente{
     private Integer idCliente;
 
     @Column(name = "nombre_completo", nullable = false, length = 150)
-    private String nomCompleto;
+    private String nombreCompleto;
 
     @Column(name = "nro_documento",nullable = false, length = 20)
     private String nroDocumento;

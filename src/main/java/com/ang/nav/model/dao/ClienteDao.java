@@ -11,12 +11,14 @@ public interface ClienteDao extends JpaRepository<Cliente,Integer> {
 
     @Query("""
     SELECT c FROM Cliente c
-    WHERE (:nombre IS NULL OR LOWER(c.nomCompleto) LIKE LOWER(CONCAT('%', :nombre, '%')))
-    AND (:nroDocumento IS NULL OR c.nroDocumento = :nroDocumento)
+    WHERE ( NULLIF(:nombre,'') IS NULL OR c.nombreCompleto ILIKE CONCAT('%', :nombre, '%'))
+    AND ( NULLIF(:nroDocumento,'') IS NULL OR c.nroDocumento = :nroDocumento)
+    AND (:idTipo IS NULL OR c.tipoCliente.idTipo = :idTipo)
     """)
     List<Cliente> buscarClientes(
             @Param("nombre") String nombre,
-            @Param("nroDocumento") String nroDocumento
+            @Param("nroDocumento") String nroDocumento,
+            @Param("idTipo") Integer idTipo
     );
 
 }
