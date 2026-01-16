@@ -1,0 +1,74 @@
+CREATE DATABASE db_banco;
+
+CREATE TABLE tipo_cliente(
+    id_tipo INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    descripcion VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE cliente(
+    id_cliente INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nombre_completo VARCHAR(150) NOT NULL,
+    nro_documento VARCHAR(20) NOT NULL,
+    email VARCHAR(100)NOT NULL,
+    celular VARCHAR(15) NOT NULL,
+    id_tipo INTEGER NOT NULL,
+    CONSTRAINT fk_tipo_cliente
+        FOREIGN KEY (id_tipo)
+        REFERENCES tipo_cliente(id_tipo)
+);
+    
+INSERT INTO tipo_cliente (descripcion) VALUES
+('Microempresa'),
+('Pequeña Empresa'),
+('Mediana Empresa'),
+('Corporativo');
+
+
+INSERT INTO cliente (
+    nombre_completo,
+    nro_documento,
+    email,
+    celular,
+    id_tipo
+) VALUES (
+    'Servicios Andinos',
+    '20456789123',
+    'ventas_serviciosandinos@gmail.com',
+    '+51984567231',
+    1
+);
+
+SELECT * FROM cliente;
+SELECT * FROM tipo_cliente;
+
+ALTER TABLE cliente
+ADD COLUMN created_by VARCHAR(50),
+ADD COLUMN created_at TIMESTAMP,
+ADD COLUMN modified_by VARCHAR(50),
+ADD COLUMN modified_at TIMESTAMP;
+
+CREATE OR REPLACE FUNCTION fn_filtrar_clientes()
+RETURNS TABLE(
+    id_cliente INTEGER,
+    nombre_completo VARCHAR,
+    nro_documento VARCHAR,
+    email VARCHAR,
+    celular VARCHAR,
+    id_tipo INTEGER
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        c.id_cliente,
+        c.nombre_completo,
+        c.nro_documento,
+        c.email,
+        c.celular,
+        t.id_tipo
+    FROM cliente c
+    JOIN tipo_cliente t ON c.id_tipo = t.id_tipo
+    WHERE c.celular LIKE '+51%'
+      AND c.nombre_completo LIKE 'A%'
+      AND t.id_tipo = 1;
+END;
+$$ LANGUAGE plpgsql;
