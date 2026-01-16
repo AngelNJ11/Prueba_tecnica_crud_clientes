@@ -5,7 +5,9 @@ import com.ang.nav.model.dto.ClienteGetDTO;
 import com.ang.nav.model.entity.Cliente;
 import com.ang.nav.services.ICliente;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,9 +35,10 @@ public class ClienteController {
 
     @PostMapping
     @Operation(summary = "Crear Cliente", description = "Permite la creación de nuevos clientes.")
-    public ClienteDTO create(@RequestBody ClienteDTO clienteDTO){
+    public ResponseEntity<ClienteDTO> create(@Valid @RequestBody ClienteDTO clienteDTO) {
         Cliente clienteSave = clienteService.save(clienteDTO);
-        return ClienteDTO.builder()
+
+        ClienteDTO response = ClienteDTO.builder()
                 .idCliente(clienteSave.getIdCliente())
                 .nombre(clienteSave.getNombreCompleto())
                 .nroDocumento(clienteSave.getNroDocumento())
@@ -44,13 +47,16 @@ public class ClienteController {
                 .tipoCliente(clienteSave.getTipoCliente().getIdTipo())
                 .build();
 
+        return ResponseEntity.ok(response);
     }
+
 
     @PutMapping
     @Operation(summary = "Actualizar Cliente",description = "Permite modificar los datos de los clientes.")
-    public ClienteDTO update(@RequestBody ClienteDTO clienteDTO){
+    public ResponseEntity<ClienteDTO> update(@Valid @RequestBody ClienteDTO clienteDTO){
         Cliente clienteUpdate =  clienteService.update(clienteDTO);
-        return ClienteDTO.builder()
+
+        ClienteDTO response = ClienteDTO.builder()
                 .idCliente(clienteUpdate.getIdCliente())
                 .nombre(clienteUpdate.getNombreCompleto())
                 .nroDocumento(clienteUpdate.getNroDocumento())
@@ -58,14 +64,16 @@ public class ClienteController {
                 .celular(clienteUpdate.getCelular())
                 .tipoCliente(clienteUpdate.getTipoCliente().getIdTipo())
                 .build();
-
+        return ResponseEntity.ok(response);
     }
+
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar Cliente", description = "Permite eliminar un cliente mediante su Id.")
-    public void delete(@PathVariable Integer id){
+    public ResponseEntity<Void> delete(@PathVariable Integer id){
         Cliente clienteDelete = clienteService.findById(id);
         clienteService.delete(clienteDelete);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
