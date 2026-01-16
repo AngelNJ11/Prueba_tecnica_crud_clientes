@@ -49,7 +49,7 @@ public class ClienteController {
     @PutMapping
     @Operation(summary = "Actualizar Cliente",description = "Permite modificar los datos de los clientes.")
     public ClienteDTO update(@RequestBody ClienteDTO clienteDTO){
-        Cliente clienteUpdate =  clienteService.save(clienteDTO);
+        Cliente clienteUpdate =  clienteService.update(clienteDTO);
         return ClienteDTO.builder()
                 .idCliente(clienteUpdate.getIdCliente())
                 .nombre(clienteUpdate.getNombreCompleto())
@@ -91,5 +91,10 @@ public class ClienteController {
     ){
         Cliente clienteActualizado = clienteService.actualizarTipoCliente(id, idTipo);
         return ResponseEntity.ok(clienteActualizado);
+    }
+
+    @GetMapping("/reporte")
+    public ResponseEntity<List<ClienteDTO>> reporteCliente(){
+        return ResponseEntity.ok(clienteService.obtenerClientesFiltrados());
     }
 }

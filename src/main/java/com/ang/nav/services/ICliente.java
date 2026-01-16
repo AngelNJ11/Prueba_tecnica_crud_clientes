@@ -11,9 +11,13 @@ public interface ICliente {
 
     Cliente save(ClienteDTO cliente);
 
+    Cliente update(ClienteDTO cliente);
+
     Cliente findById(Integer id);
 
     void delete(Cliente cliente);
 
     Cliente actualizarTipoCliente(Integer idCliente , Integer idTipo);
+
+    List<ClienteDTO> obtenerClientesFiltrados();
 }

@@ -1,5 +1,6 @@
 package com.ang.nav.model.dao;
 
+import com.ang.nav.model.dto.ClienteDTO;
 import com.ang.nav.model.entity.Cliente;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,5 +21,8 @@ public interface ClienteDao extends JpaRepository<Cliente,Integer> {
             @Param("nroDocumento") String nroDocumento,
             @Param("idTipo") Integer idTipo
     );
+
+    @Query(value = "SELECT * FROM fn_filtrar_clientes()", nativeQuery = true)
+    List<Object[]> filtrarClientes();
 
 }

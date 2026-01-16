@@ -16,4 +16,5 @@ public class ClienteDTO {
     private String celular;
     private Integer tipoCliente;
 
+
 }

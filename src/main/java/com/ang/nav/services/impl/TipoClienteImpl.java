@@ -1,5 +1,6 @@
 package com.ang.nav.services.impl;
 
+import com.ang.nav.exception.TipoClienteNotFoundException;
 import com.ang.nav.model.dao.TipoClienteDao;
 import com.ang.nav.model.entity.TipoCliente;
 import com.ang.nav.services.ITipoCliente;
@@ -18,7 +19,8 @@ public class TipoClienteImpl implements ITipoCliente {
     @Transactional(readOnly = true)
     @Override
     public TipoCliente findById(Integer id) {
-        return tipoClienteDao.findById(id).orElseThrow(() -> new RuntimeException("Tipo de cliente no existe"));
+        return tipoClienteDao.findById(id)
+                .orElseThrow(() -> new TipoClienteNotFoundException("Tipo de cliente con id " + id + " no existe"));
     }
 
 
