@@ -77,4 +77,12 @@ public class ClienteController {
                 .build();
     }
 
+    @PatchMapping("/{id}/{idTipo}")
+    public ResponseEntity<Cliente>actualizarTipoCliente(
+            @PathVariable Integer id,
+            @PathVariable Integer idTipo
+    ){
+        Cliente clienteActualizado = clienteService.actualizarTipoCliente(id, idTipo);
+        return ResponseEntity.ok(clienteActualizado);
+    }
 }

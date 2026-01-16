@@ -15,4 +15,5 @@ public interface ICliente {
 
     void delete(Cliente cliente);
 
+    Cliente actualizarTipoCliente(Integer idCliente , Integer idTipo);
 }

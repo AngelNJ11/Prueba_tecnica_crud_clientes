@@ -1,5 +1,6 @@
 package com.ang.nav.model.entity;
 
+import com.ang.nav.model.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "cliente")
-public class Cliente{
+public class Cliente extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

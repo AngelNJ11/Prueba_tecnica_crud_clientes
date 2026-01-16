@@ -1,6 +1,7 @@
 package com.ang.nav.services.impl;
 
 import com.ang.nav.model.dao.ClienteDao;
+import com.ang.nav.model.dao.TipoClienteDao;
 import com.ang.nav.model.dto.ClienteDTO;
 import com.ang.nav.model.entity.Cliente;
 import com.ang.nav.model.entity.TipoCliente;
@@ -15,10 +16,13 @@ import java.util.List;
 public class ClienteImpl implements ICliente {
 
     private final ClienteDao clienteDao;
+    private final TipoClienteDao tipoClienteDao;
     private final ITipoCliente tipoClienteService;
 
-    public ClienteImpl(ClienteDao clienteDao, ITipoCliente tipoClienteService) {
+
+    public ClienteImpl(ClienteDao clienteDao, TipoClienteDao tipoClienteDao, ITipoCliente tipoClienteService) {
         this.clienteDao = clienteDao;
+        this.tipoClienteDao = tipoClienteDao;
         this.tipoClienteService = tipoClienteService;
     }
 
@@ -56,5 +60,19 @@ public class ClienteImpl implements ICliente {
     @Override
     public void delete( Cliente cliente) {
         clienteDao.delete(cliente);
+    }
+
+    @Transactional
+    @Override
+    public Cliente actualizarTipoCliente(Integer idCliente, Integer idTipo) {
+
+        Cliente cliente = clienteDao.findById(idCliente)
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+
+        TipoCliente tipoCliente = tipoClienteDao.findById(idTipo)
+                .orElseThrow(() -> new RuntimeException("Tipo de cliente no existe"));
+
+        cliente.setTipoCliente(tipoCliente);
+        return clienteDao.save(cliente);
     }
 }
