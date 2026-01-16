@@ -101,6 +101,7 @@ public class ClienteController {
     }
 
     @GetMapping("/reporte")
+    @Operation(summary = "Lista de cliente", description = "Permite obtener los clientes que empiecen con la letra 'A' y los números que tengan el '+51'.")
     public ResponseEntity<List<ClienteDTO>> reporteCliente(){
         return ResponseEntity.ok(clienteService.obtenerClientesFiltrados());
     }
