@@ -4,6 +4,7 @@ import com.ang.nav.model.dto.ClienteDTO;
 import com.ang.nav.model.dto.ClienteGetDTO;
 import com.ang.nav.model.entity.Cliente;
 import com.ang.nav.services.ICliente;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ public class ClienteController {
     private ICliente clienteService;
 
     @GetMapping
+    @Operation(summary = "Busqueda por Filtro", description = "Filtra a los cliente por los campos de nombre , documento y tipo de cliente")
     public ResponseEntity<List<Cliente>> buscarCliente(
             @RequestParam(required = false) String nombre,
             @RequestParam(required = false) String nroDocumento,
@@ -30,6 +32,7 @@ public class ClienteController {
     }
 
     @PostMapping
+    @Operation(summary = "Crear Cliente", description = "Permite la creación de nuevos clientes.")
     public ClienteDTO create(@RequestBody ClienteDTO clienteDTO){
         Cliente clienteSave = clienteService.save(clienteDTO);
         return ClienteDTO.builder()
@@ -44,6 +47,7 @@ public class ClienteController {
     }
 
     @PutMapping
+    @Operation(summary = "Actualizar Cliente",description = "Permite modificar los datos de los clientes.")
     public ClienteDTO update(@RequestBody ClienteDTO clienteDTO){
         Cliente clienteUpdate =  clienteService.save(clienteDTO);
         return ClienteDTO.builder()
@@ -58,12 +62,14 @@ public class ClienteController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar Cliente", description = "Permite eliminar un cliente mediante su Id.")
     public void delete(@PathVariable Integer id){
         Cliente clienteDelete = clienteService.findById(id);
         clienteService.delete(clienteDelete);
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Buscar Cliente", description = "Permite buscar a los clientes por medio de su ID.")
     public ClienteGetDTO showById(@PathVariable Integer id){
         Cliente cliente = clienteService.findById(id);
         return ClienteGetDTO.builder()
@@ -78,6 +84,7 @@ public class ClienteController {
     }
 
     @PatchMapping("/{id}/{idTipo}")
+    @Operation(summary = "Editar el Tipo de cliente", description = "Permite cambiar el tipo de cliente de los clientes.")
     public ResponseEntity<Cliente>actualizarTipoCliente(
             @PathVariable Integer id,
             @PathVariable Integer idTipo
