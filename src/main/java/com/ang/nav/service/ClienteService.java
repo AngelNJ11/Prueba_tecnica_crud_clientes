@@ -1,11 +1,11 @@
-package com.ang.nav.services;
+package com.ang.nav.service;
 
-import com.ang.nav.model.dto.ClienteDTO;
-import com.ang.nav.model.entity.Cliente;
+import com.ang.nav.dto.ClienteDTO;
+import com.ang.nav.entity.Cliente;
 
 import java.util.List;
 
-public interface ICliente {
+public interface ClienteService {
 
     List<Cliente> buscarClientes(String nombre, String nroDocumento, Integer idTipo);
 

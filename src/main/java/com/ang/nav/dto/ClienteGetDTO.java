@@ -1,4 +1,4 @@
-package com.ang.nav.model.dto;
+package com.ang.nav.dto;
 
 import lombok.*;
 

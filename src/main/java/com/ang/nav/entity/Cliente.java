@@ -1,6 +1,5 @@
-package com.ang.nav.model.entity;
+package com.ang.nav.entity;
 
-import com.ang.nav.model.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

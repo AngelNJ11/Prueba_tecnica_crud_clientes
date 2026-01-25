@@ -1,4 +1,4 @@
-package com.ang.nav.model.entity;
+package com.ang.nav.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

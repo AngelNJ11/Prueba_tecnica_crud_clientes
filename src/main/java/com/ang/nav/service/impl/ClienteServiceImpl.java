@@ -1,14 +1,14 @@
-package com.ang.nav.services.impl;
+package com.ang.nav.service.impl;
 
 import com.ang.nav.exception.ClienteNotFoundException;
 import com.ang.nav.exception.TipoClienteNotFoundException;
-import com.ang.nav.model.dao.ClienteDao;
-import com.ang.nav.model.dao.TipoClienteDao;
-import com.ang.nav.model.dto.ClienteDTO;
-import com.ang.nav.model.entity.Cliente;
-import com.ang.nav.model.entity.TipoCliente;
-import com.ang.nav.services.ICliente;
-import com.ang.nav.services.ITipoCliente;
+import com.ang.nav.repository.ClienteRepository;
+import com.ang.nav.repository.TipoClienteRepository;
+import com.ang.nav.dto.ClienteDTO;
+import com.ang.nav.entity.Cliente;
+import com.ang.nav.entity.TipoCliente;
+import com.ang.nav.service.ClienteService;
+import com.ang.nav.service.TipoClienteService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,23 +16,23 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ClienteImpl implements ICliente {
+public class ClienteServiceImpl implements ClienteService {
 
-    private final ClienteDao clienteDao;
-    private final TipoClienteDao tipoClienteDao;
-    private final ITipoCliente tipoClienteService;
+    private final ClienteRepository clienteRepository;
+    private final TipoClienteRepository tipoClienteRepository;
+    private final TipoClienteService tipoClienteService;
 
 
-    public ClienteImpl(ClienteDao clienteDao, TipoClienteDao tipoClienteDao, ITipoCliente tipoClienteService) {
-        this.clienteDao = clienteDao;
-        this.tipoClienteDao = tipoClienteDao;
+    public ClienteServiceImpl(ClienteRepository clienteRepository, TipoClienteRepository tipoClienteRepository, TipoClienteService tipoClienteService) {
+        this.clienteRepository = clienteRepository;
+        this.tipoClienteRepository = tipoClienteRepository;
         this.tipoClienteService = tipoClienteService;
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Cliente> buscarClientes(String nombre, String nroDocumento, Integer idTipo) {
-        return clienteDao.buscarClientes(nombre,nroDocumento,idTipo);
+        return clienteRepository.buscarClientes(nombre,nroDocumento,idTipo);
     }
 
     @Transactional
@@ -50,13 +50,13 @@ public class ClienteImpl implements ICliente {
                 .tipoCliente(tipoCliente)
                 .build();
 
-        return clienteDao.save(cliente);
+        return clienteRepository.save(cliente);
     }
 
     @Transactional
     @Override
     public Cliente update(ClienteDTO clienteDto) {
-        Cliente clienteExistente = clienteDao.findById(clienteDto.getIdCliente())
+        Cliente clienteExistente = clienteRepository.findById(clienteDto.getIdCliente())
                 .orElseThrow(() -> new ClienteNotFoundException(
                         "Cliente con el id " + clienteDto.getIdCliente() + " no encontrado"
                 ));
@@ -69,38 +69,38 @@ public class ClienteImpl implements ICliente {
         clienteExistente.setCelular(clienteDto.getCelular());
         clienteExistente.setTipoCliente(tipoCliente);
 
-        return clienteDao.save(clienteExistente);
+        return clienteRepository.save(clienteExistente);
     }
 
     @Transactional(readOnly = true)
     @Override
     public Cliente findById(Integer id) {
-        return clienteDao.findById(id).orElseThrow(() -> new ClienteNotFoundException("Cliente con id " + id + " no encontrado"));
+        return clienteRepository.findById(id).orElseThrow(() -> new ClienteNotFoundException("Cliente con id " + id + " no encontrado"));
     }
 
     @Transactional
     @Override
     public void delete( Cliente cliente) {
-        clienteDao.delete(cliente);
+        clienteRepository.delete(cliente);
     }
 
     @Transactional
     @Override
     public Cliente actualizarTipoCliente(Integer idCliente, Integer idTipo) {
 
-        Cliente cliente = clienteDao.findById(idCliente)
+        Cliente cliente = clienteRepository.findById(idCliente)
                 .orElseThrow(() -> new ClienteNotFoundException("Cliente con id " + idCliente + " no encontrado"));
 
-        TipoCliente tipoCliente = tipoClienteDao.findById(idTipo)
+        TipoCliente tipoCliente = tipoClienteRepository.findById(idTipo)
                 .orElseThrow(() -> new TipoClienteNotFoundException("Tipo de cliente con id " + idTipo + " no existe"));
 
         cliente.setTipoCliente(tipoCliente);
-        return clienteDao.save(cliente);
+        return clienteRepository.save(cliente);
     }
 
     @Override
     public List<ClienteDTO> obtenerClientesFiltrados() {
-        List<Object[]> result = clienteDao.filtrarClientes();
+        List<Object[]> result = clienteRepository.filtrarClientes();
         return result.stream()
                 .map(r -> new ClienteDTO(
                         (Integer) r[0],

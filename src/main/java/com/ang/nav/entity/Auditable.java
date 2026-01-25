@@ -1,4 +1,4 @@
-package com.ang.nav.model.audit;
+package com.ang.nav.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

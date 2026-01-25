@@ -1,9 +1,9 @@
 package com.ang.nav.controller;
 
-import com.ang.nav.model.dto.ClienteDTO;
-import com.ang.nav.model.dto.ClienteGetDTO;
-import com.ang.nav.model.entity.Cliente;
-import com.ang.nav.services.ICliente;
+import com.ang.nav.dto.ClienteDTO;
+import com.ang.nav.dto.ClienteGetDTO;
+import com.ang.nav.entity.Cliente;
+import com.ang.nav.service.ClienteService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class ClienteController {
 
 
     @Autowired
-    private ICliente clienteService;
+    private ClienteService clienteService;
 
     @GetMapping
     @Operation(summary = "Busqueda por Filtro", description = "Filtra a los cliente por los campos de nombre , documento y tipo de cliente")
