@@ -1,12 +1,16 @@
 package com.ang.nav.controller;
 
-import com.ang.nav.dto.ClienteDTO;
-import com.ang.nav.dto.ClienteGetDTO;
-import com.ang.nav.entity.Cliente;
+import com.ang.nav.dto.ClienteRequestDTO;
+import com.ang.nav.dto.ClienteResponseAuditDTO;
+import com.ang.nav.dto.ClienteResponseDTO;
 import com.ang.nav.service.ClienteService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/clientes")
+@RequiredArgsConstructor
 public class ClienteController {
 
 
@@ -22,87 +27,57 @@ public class ClienteController {
 
     @GetMapping
     @Operation(summary = "Busqueda por Filtro", description = "Filtra a los cliente por los campos de nombre , documento y tipo de cliente")
-    public ResponseEntity<List<Cliente>> buscarCliente(
+    public ResponseEntity<Page<ClienteResponseDTO>> buscarCliente(
             @RequestParam(required = false) String nombre,
             @RequestParam(required = false) String nroDocumento,
-            @RequestParam(required = false) Integer idTipo
+            @RequestParam(required = false) Integer idTipo,
+            Pageable pageable
     ) {
         return ResponseEntity.ok(
-                clienteService.buscarClientes(nombre, nroDocumento, idTipo)
+                clienteService.buscarClientes(nombre, nroDocumento, idTipo, pageable)
         );
     }
 
     @PostMapping
     @Operation(summary = "Crear Cliente", description = "Permite la creación de nuevos clientes.")
-    public ResponseEntity<ClienteDTO> create(@Valid @RequestBody ClienteDTO clienteDTO) {
-        Cliente clienteSave = clienteService.save(clienteDTO);
-
-        ClienteDTO response = ClienteDTO.builder()
-                .idCliente(clienteSave.getIdCliente())
-                .nombre(clienteSave.getNombreCompleto())
-                .nroDocumento(clienteSave.getNroDocumento())
-                .email(clienteSave.getEmail())
-                .celular(clienteSave.getCelular())
-                .tipoCliente(clienteSave.getTipoCliente().getIdTipo())
-                .build();
-
-        return ResponseEntity.ok(response);
+    public ResponseEntity<ClienteResponseDTO> create(@Valid @RequestBody ClienteRequestDTO clienteRequestDTO) {
+        ClienteResponseDTO crear = clienteService.save(clienteRequestDTO);
+        return ResponseEntity.ok(crear);
     }
 
-
-    @PutMapping
+    @PutMapping("/{id}")
     @Operation(summary = "Actualizar Cliente",description = "Permite modificar los datos de los clientes.")
-    public ResponseEntity<ClienteDTO> update(@Valid @RequestBody ClienteDTO clienteDTO){
-        Cliente clienteUpdate =  clienteService.update(clienteDTO);
-
-        ClienteDTO response = ClienteDTO.builder()
-                .idCliente(clienteUpdate.getIdCliente())
-                .nombre(clienteUpdate.getNombreCompleto())
-                .nroDocumento(clienteUpdate.getNroDocumento())
-                .email(clienteUpdate.getEmail())
-                .celular(clienteUpdate.getCelular())
-                .tipoCliente(clienteUpdate.getTipoCliente().getIdTipo())
-                .build();
-        return ResponseEntity.ok(response);
+    public ResponseEntity<ClienteResponseDTO> update(@Valid @PathVariable Integer id, @RequestBody ClienteRequestDTO clienteRequestDTO){
+        ClienteResponseDTO actualizar = clienteService.update(id, clienteRequestDTO);
+        return ResponseEntity.ok(actualizar);
     }
-
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar Cliente", description = "Permite eliminar un cliente mediante su Id.")
     public ResponseEntity<Void> delete(@PathVariable Integer id){
-        Cliente clienteDelete = clienteService.findById(id);
-        clienteService.delete(clienteDelete);
+        clienteService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Buscar Cliente", description = "Permite buscar a los clientes por medio de su ID.")
-    public ClienteGetDTO showById(@PathVariable Integer id){
-        Cliente cliente = clienteService.findById(id);
-        return ClienteGetDTO.builder()
-                .idCliente(cliente.getIdCliente())
-                .nombre(cliente.getNombreCompleto())
-                .nroDocumento(cliente.getNroDocumento())
-                .email(cliente.getEmail())
-                .celular(cliente.getCelular())
-                .tipoCliente(cliente.getTipoCliente().getIdTipo())
-                .descripcion(cliente.getTipoCliente().getDescripcion())
-                .build();
+    public ResponseEntity<ClienteResponseAuditDTO> showById(@PathVariable Integer id){
+        return ResponseEntity.ok(clienteService.findById(id));
     }
 
     @PatchMapping("/{id}/{idTipo}")
     @Operation(summary = "Editar el Tipo de cliente", description = "Permite cambiar el tipo de cliente de los clientes.")
-    public ResponseEntity<Cliente>actualizarTipoCliente(
+    public ResponseEntity<ClienteResponseDTO> actualizarTipoCliente(
             @PathVariable Integer id,
             @PathVariable Integer idTipo
     ){
-        Cliente clienteActualizado = clienteService.actualizarTipoCliente(id, idTipo);
+        ClienteResponseDTO clienteActualizado = clienteService.actualizarTipoCliente(id, idTipo);
         return ResponseEntity.ok(clienteActualizado);
     }
 
     @GetMapping("/reporte")
     @Operation(summary = "Lista de cliente", description = "Permite obtener los clientes que empiecen con la letra 'A' y los números que tengan el '+51'.")
-    public ResponseEntity<List<ClienteDTO>> reporteCliente(){
+    public ResponseEntity<List<ClienteResponseAuditDTO>> reporteCliente(){
         return ResponseEntity.ok(clienteService.obtenerClientesFiltrados());
     }
 }

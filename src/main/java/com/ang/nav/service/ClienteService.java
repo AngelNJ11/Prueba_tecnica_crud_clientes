@@ -1,23 +1,26 @@
 package com.ang.nav.service;
 
-import com.ang.nav.dto.ClienteDTO;
-import com.ang.nav.entity.Cliente;
+import com.ang.nav.dto.ClienteRequestDTO;
+import com.ang.nav.dto.ClienteResponseAuditDTO;
+import com.ang.nav.dto.ClienteResponseDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface ClienteService {
 
-    List<Cliente> buscarClientes(String nombre, String nroDocumento, Integer idTipo);
+    Page<ClienteResponseDTO> buscarClientes(String nombre, String nroDocumento, Integer idTipo, Pageable pageable);
 
-    Cliente save(ClienteDTO cliente);
+    ClienteResponseDTO save(ClienteRequestDTO clienteDto);
 
-    Cliente update(ClienteDTO cliente);
+    ClienteResponseDTO update(Integer id, ClienteRequestDTO clienteDto);
 
-    Cliente findById(Integer id);
+    ClienteResponseAuditDTO findById(Integer id);
 
-    void delete(Cliente cliente);
+    void delete(Integer cliente);
 
-    Cliente actualizarTipoCliente(Integer idCliente , Integer idTipo);
+    ClienteResponseDTO actualizarTipoCliente(Integer idCliente , Integer idTipo);
 
-    List<ClienteDTO> obtenerClientesFiltrados();
+    List<ClienteResponseAuditDTO> obtenerClientesFiltrados();
 }

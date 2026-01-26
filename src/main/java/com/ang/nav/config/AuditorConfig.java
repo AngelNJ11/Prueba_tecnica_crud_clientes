@@ -17,13 +17,4 @@ public class AuditorConfig {
     public AuditorAware<String> auditorProvider(){
         return () -> Optional.of("ANGEL_NAVARRO");
     }
-
-    @Bean
-    public OpenAPI customOpenAPIO(){
-        return new OpenAPI()
-                .info(new Info()
-                .title("API CLIENTES")
-                .version("1.0")
-                .description("Documentación del API CLIENTES"));
-    }
 }
