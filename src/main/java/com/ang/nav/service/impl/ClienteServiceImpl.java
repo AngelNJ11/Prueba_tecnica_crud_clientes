@@ -1,18 +1,20 @@
 package com.ang.nav.service.impl;
 
-import com.ang.nav.dto.ClienteResponseAuditDTO;
-import com.ang.nav.dto.ClienteResponseDTO;
+import org.openapitools.model.ClienteResponseAuditDTO;
+import org.openapitools.model.ClienteResponseDTO;
 import com.ang.nav.exception.ClienteNotFoundException;
 import com.ang.nav.exception.TipoClienteNotFoundException;
 import com.ang.nav.mapper.ClienteMapper;
 import com.ang.nav.repository.ClienteRepository;
 import com.ang.nav.repository.TipoClienteRepository;
-import com.ang.nav.dto.ClienteRequestDTO;
+import org.openapitools.model.ClienteRequestDTO;
 import com.ang.nav.entity.Cliente;
 import com.ang.nav.entity.TipoCliente;
 import com.ang.nav.service.ClienteService;
 import com.ang.nav.service.TipoClienteService;
+import org.openapitools.model.FiltrarCliente200Response;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,8 +38,10 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
-    public Page<ClienteResponseDTO> buscarClientes(String nombre, String nroDocumento, Integer idTipo, Pageable pageable) {
-        return clienteRepository.buscarClientes(nombre,nroDocumento,idTipo,pageable).map(clienteMapper::toDto);
+    public FiltrarCliente200Response buscarClientes(String nombre, String nroDocumento, Integer idTipo, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page,size);
+        Page<Cliente> pageCliente = clienteRepository.buscarClientes(nombre,nroDocumento,idTipo,pageable);
+        return clienteMapper.toFiltrarCliente(pageCliente);
     }
 
     @Transactional
@@ -53,7 +57,7 @@ public class ClienteServiceImpl implements ClienteService {
     public ClienteResponseDTO update(Integer id,ClienteRequestDTO clienteRequestDto) {
         Cliente clienteExistente = clienteRepository.findById(id)
                 .orElseThrow(() -> new ClienteNotFoundException(
-                        "Cliente con el id " + clienteRequestDto.getIdCliente() + " no encontrado"
+                        "Cliente no encontrado"
                 ));
 
         clienteMapper.actualizarEntityDto(clienteRequestDto, clienteExistente);

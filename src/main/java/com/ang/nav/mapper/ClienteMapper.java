@@ -1,13 +1,18 @@
 package com.ang.nav.mapper;
 
-import com.ang.nav.dto.ClienteRequestDTO;
-import com.ang.nav.dto.ClienteResponseAuditDTO;
-import com.ang.nav.dto.ClienteResponseDTO;
+import org.openapitools.model.ClienteRequestDTO;
+import org.openapitools.model.ClienteResponseAuditDTO;
+import org.openapitools.model.ClienteResponseDTO;
 import com.ang.nav.entity.Cliente;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.openapitools.model.FiltrarCliente200Response;
+import org.springframework.data.domain.Page;
 
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
@@ -35,5 +40,27 @@ public interface ClienteMapper {
     void actualizarEntityDto(ClienteRequestDTO dto, @MappingTarget Cliente entity);
 
 
+
+
+    default FiltrarCliente200Response toFiltrarCliente(Page<Cliente> page) {
+        FiltrarCliente200Response response =
+                new FiltrarCliente200Response();
+
+        response.setContent(toDtoList(page.getContent()));
+        response.setTotalElements((int) page.getTotalElements());
+        response.setTotalPages(page.getTotalPages());
+        response.setNumber(page.getNumber());
+        response.setSize(page.getSize());
+
+        return response;
+    }
+
+    default OffsetDateTime map(LocalDateTime value) {
+        return value == null ? null : value.atOffset(ZoneOffset.UTC);
+    }
+
+    default LocalDateTime map(OffsetDateTime value) {
+        return value == null ? null : value.toLocalDateTime();
+    }
 
 }

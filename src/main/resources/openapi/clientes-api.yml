@@ -1,0 +1,222 @@
+openapi: 3.0.3
+info:
+  title: API Clientes
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /api/clientes:
+    get:
+      summary: Filtrar clientes
+      operationId: filtrarCliente
+      parameters:
+        - name: nombre
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: nroDocumento
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: idTipo
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Lista de clientes paginada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ClienteResponseDTO'
+                  totalElements:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  number:
+                    type: integer
+                  size:
+                    type: integer
+
+    post:
+      summary: Crear cliente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClienteRequestDTO'
+      responses:
+        '200':
+          description: Cliente creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClienteResponseDTO'
+
+  /api/clientes/{id}:
+    get:
+      summary: Buscar cliente por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Cliente encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClienteResponseAuditDTO'
+    put:
+      summary: Actualizar cliente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClienteRequestDTO'
+      responses:
+        '200':
+          description: Cliente actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClienteResponseDTO'
+    delete:
+      summary: Eliminar cliente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Cliente eliminado
+
+  /api/clientes/{id}/{idTipo}:
+    patch:
+      summary: Actualizar tipo de cliente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: idTipo
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Tipo de cliente actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClienteResponseDTO'
+
+  /api/clientes/reporte:
+    get:
+      summary: Reporte de clientes
+      responses:
+        '200':
+          description: Lista de clientes filtrados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClienteResponseAuditDTO'
+
+components:
+  schemas:
+    ClienteRequestDTO:
+      type: object
+      properties:
+        nombre:
+          type: string
+        nroDocumento:
+          type: string
+        email:
+          type: string
+        celular:
+          type: string
+        tipoCliente:
+          type: integer
+      required:
+        - nombre
+        - nroDocumento
+        - email
+        - celular
+        - tipoCliente
+
+    ClienteResponseDTO:
+      type: object
+      properties:
+        idCliente:
+          type: integer
+        nombre:
+          type: string
+        nroDocumento:
+          type: string
+        email:
+          type: string
+        celular:
+          type: string
+        tipoCliente:
+          type: integer
+
+    ClienteResponseAuditDTO:
+      type: object
+      properties:
+        nombre:
+          type: string
+        nroDocumento:
+          type: string
+        email:
+          type: string
+        celular:
+          type: string
+        tipoCliente:
+          type: integer
+        createdBy:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        modifiedBy:
+          type: string
+        modifiedAt:
+          type: string
+          format: date-time
+
