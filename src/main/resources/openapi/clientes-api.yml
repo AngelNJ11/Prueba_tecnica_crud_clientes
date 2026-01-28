@@ -165,12 +165,18 @@ components:
       properties:
         nombre:
           type: string
+          minLength: 3
+          maxLength: 150
         nroDocumento:
           type: string
+          pattern: "^[0-9]{8,20}$"
         email:
           type: string
+          format: email
         celular:
           type: string
+          example: "+51987654321"
+          pattern: "^\\+[1-9]\\d{7,14}$"
         tipoCliente:
           type: integer
       required:

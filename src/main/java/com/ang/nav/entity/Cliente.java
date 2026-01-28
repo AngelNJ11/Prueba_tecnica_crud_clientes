@@ -29,7 +29,7 @@ public class Cliente{
     @Column(name = "nombre_completo", nullable = false, length = 150)
     private String nombreCompleto;
 
-    @Column(name = "nro_documento",nullable = false, length = 20)
+    @Column(name = "nro_documento",nullable = false, length = 20, unique = true)
     private String nroDocumento;
 
     @Column(length = 100, nullable = false)

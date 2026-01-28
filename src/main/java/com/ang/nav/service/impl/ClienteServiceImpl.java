@@ -1,5 +1,6 @@
 package com.ang.nav.service.impl;
 
+import com.ang.nav.exception.NroDocumentoAlreadyExistsException;
 import org.openapitools.model.ClienteResponseAuditDTO;
 import org.openapitools.model.ClienteResponseDTO;
 import com.ang.nav.exception.ClienteNotFoundException;
@@ -47,6 +48,9 @@ public class ClienteServiceImpl implements ClienteService {
     @Transactional
     @Override
     public ClienteResponseDTO save(ClienteRequestDTO clienteRequestDto) {
+        if(clienteRepository.existsByNroDocumento(clienteRequestDto.getNroDocumento())){
+            throw new NroDocumentoAlreadyExistsException("El número de documento ya está registrado");
+        }
         Cliente cliente = clienteMapper.toEntity(clienteRequestDto);
         cliente.setTipoCliente(tipoClienteService.findById(clienteRequestDto.getTipoCliente()));
         return clienteMapper.toDto(clienteRepository.save(cliente));
@@ -59,12 +63,11 @@ public class ClienteServiceImpl implements ClienteService {
                 .orElseThrow(() -> new ClienteNotFoundException(
                         "Cliente no encontrado"
                 ));
-
-        clienteMapper.actualizarEntityDto(clienteRequestDto, clienteExistente);
         TipoCliente tipoCliente = tipoClienteRepository.findById(clienteRequestDto.getTipoCliente())
                 .orElseThrow(() -> new TipoClienteNotFoundException(
                         "El tipo de cliente no fue encontrado"
                 ));
+        clienteMapper.actualizarEntityDto(clienteRequestDto, clienteExistente);
         clienteExistente.setTipoCliente(tipoCliente);
         Cliente clienteActualizado = clienteRepository.save(clienteExistente);
         return clienteMapper.toDto(clienteActualizado);

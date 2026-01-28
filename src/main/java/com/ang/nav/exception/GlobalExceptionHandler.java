@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -70,14 +71,49 @@ public class GlobalExceptionHandler {
         error.put("error", "BAD REQUEST");
         error.put("path", req.getRequestURI());
 
-        List<String> messages = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(fe -> fe.getField() + ": " + fe.getDefaultMessage())
-                .toList();
+        Map<String, String> fields = new HashMap<>();
 
-        error.put("messages", messages);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        ex.getBindingResult()
+                .getFieldErrors()
+                .forEach(fe -> {
+            fields.put(fe.getField(), mapCustomMessage(fe));
+        });
+
+        error.put("fields", fields);
+
+        return ResponseEntity.badRequest().body(error);
+    }
+
+    private String mapCustomMessage(FieldError fe) {
+
+        return switch (fe.getField()) {
+            case "celular" ->
+                    "El celular debe tener formato internacional, ejemplo: +51987654321";
+
+            case "nroDocumento" ->
+                    "El número de documento debe contener solo números y tener entre 8, 20 dígitos";
+
+            case "email" ->
+                    "El correo electrónico no tiene un formato válido";
+
+            default ->
+                    fe.getDefaultMessage();
+        };
+    }
+
+    @ExceptionHandler(NroDocumentoAlreadyExistsException.class)
+    public ResponseEntity<?> handleDuplicateDocumento(
+            NroDocumentoAlreadyExistsException ex,
+            HttpServletRequest req
+    ) {
+        Map<String, Object> error = new HashMap<>();
+        error.put("timestamp", LocalDateTime.now());
+        error.put("status", 409);
+        error.put("error", "CONFLICT");
+        error.put("message", ex.getMessage());
+        error.put("path", req.getRequestURI());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
 }

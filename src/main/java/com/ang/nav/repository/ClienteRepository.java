@@ -27,4 +27,6 @@ public interface ClienteRepository extends JpaRepository<Cliente,Integer> {
     @Query(value = "SELECT * FROM fn_filtrar_clientes()", nativeQuery = true)
     List<Cliente> filtrarClientes();
 
+    boolean existsByNroDocumento(String nroDocumento);
+
 }
