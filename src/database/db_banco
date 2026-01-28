@@ -8,7 +8,7 @@ CREATE TABLE tipo_cliente(
 CREATE TABLE cliente(
     id_cliente INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     nombre_completo VARCHAR(150) NOT NULL,
-    nro_documento VARCHAR(20) NOT NULL,
+    nro_documento VARCHAR(20) NOT NULL UNIQUE,
     email VARCHAR(100)NOT NULL,
     celular VARCHAR(15) NOT NULL,
     id_tipo INTEGER NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE cliente(
         FOREIGN KEY (id_tipo)
         REFERENCES tipo_cliente(id_tipo)
 );
-    
+
 INSERT INTO tipo_cliente (descripcion) VALUES
 ('Microempresa'),
 ('Pequeña Empresa'),
@@ -47,6 +47,7 @@ ADD COLUMN created_at TIMESTAMP,
 ADD COLUMN modified_by VARCHAR(50),
 ADD COLUMN modified_at TIMESTAMP;
 
+
 CREATE OR REPLACE FUNCTION fn_filtrar_clientes()
 RETURNS TABLE(
     id_cliente INTEGER,
@@ -54,21 +55,29 @@ RETURNS TABLE(
     nro_documento VARCHAR,
     email VARCHAR,
     celular VARCHAR,
-    id_tipo INTEGER
+    id_tipo INTEGER,
+    created_by VARCHAR,
+    created_at TIMESTAMP,
+    modified_by VARCHAR ,
+    modified_at TIMESTAMP
 ) AS $$
 BEGIN
     RETURN QUERY
-    SELECT 
+    SELECT
         c.id_cliente,
         c.nombre_completo,
         c.nro_documento,
         c.email,
         c.celular,
-        t.id_tipo
+        t.id_tipo,
+        c.created_by,
+        c.created_at ,
+        c.modified_by,
+        c.modified_at
     FROM cliente c
     JOIN tipo_cliente t ON c.id_tipo = t.id_tipo
     WHERE c.celular LIKE '+51%'
       AND c.nombre_completo LIKE 'A%'
-      AND t.id_tipo = 1;
+      AND t.descripcion LIKE 'Microempresa';
 END;
 $$ LANGUAGE plpgsql;
