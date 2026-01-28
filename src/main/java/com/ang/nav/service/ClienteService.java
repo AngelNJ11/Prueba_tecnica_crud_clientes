@@ -4,8 +4,6 @@ import org.openapitools.model.ClienteRequestDTO;
 import org.openapitools.model.ClienteResponseAuditDTO;
 import org.openapitools.model.ClienteResponseDTO;
 import org.openapitools.model.FiltrarCliente200Response;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
